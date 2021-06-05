@@ -33,6 +33,7 @@ public class GameController : MonoBehaviour
     // UI for HUD
     public Image colourToSelectImage;
     public TextMeshProUGUI colourHexText;
+    public TextMeshProUGUI rightColourHex;
     public TextMeshProUGUI currentScoreText;
     public TextMeshProUGUI highScoreText;
 
@@ -57,7 +58,10 @@ public class GameController : MonoBehaviour
                     colourIndex = 0;
                 }
             }
-            colourPanel.color = colours[colourIndex];
+            Color myColor = colours[colourIndex];
+            colourPanel.color = myColor;
+
+            colourHexText.text = "#" + ColorUtility.ToHtmlStringRGB(myColor);
             yield return new WaitForSeconds(timePerCycle);
         }
     }
@@ -88,6 +92,7 @@ public class GameController : MonoBehaviour
             else
             {
                 gameOverPanel.SetActive(true);
+                if(PlayerPrefs.GetInt("HighScore", 0) < score) PlayerPrefs.SetInt("HighScore", score);
             }
         }
     }
@@ -95,7 +100,8 @@ public class GameController : MonoBehaviour
     {
         levelIndex = 1;
         score = 0;
-        currentScoreText.text = "Score" + score;
+        currentScoreText.text = "Score: " + score;
+        highScoreText.text = "Highscore: " + PlayerPrefs.GetInt("HighScore",0).ToString();
         Run();
     }
 
@@ -116,6 +122,7 @@ public class GameController : MonoBehaviour
         
         // Choose a winning colour
         winColour = colours[correctColourIndex];
+        rightColourHex.text = "#" + ColorUtility.ToHtmlStringRGB(colours[correctColourIndex]);
         colourIndex = (int)Math.Floor(correctColourIndex / 2.0f);
 
         // Correct UI
